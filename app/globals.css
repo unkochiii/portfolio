@@ -5,6 +5,10 @@
   --font-sans: var(--font-geist-sans);
 }
 
+html {
+  font-size: 17px;
+}
+
 body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
@@ -45,6 +49,71 @@ html.dark .nav-links {
 }
 .hero-bg {
   @apply absolute bottom-1/4 left-1/4 w-72 h-72 rounded-full pointer-events-none;
+}
+
+/* ── Hero lights ─────────────────────────────────────────────── */
+.hero-light {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(45px);
+}
+
+.hero-light-1 {
+  width: 500px;
+  height: 500px;
+  top: -8%;
+  left: -4%;
+  background: radial-gradient(circle, rgba(255,255,255,0.55) 0%, transparent 60%);
+  animation: heroFloat 13s ease-in-out infinite;
+}
+.hero-light-2 {
+  width: 380px;
+  height: 380px;
+  bottom: 2%;
+  right: 4%;
+  background: radial-gradient(circle, rgba(210,185,255,0.55) 0%, transparent 60%);
+  animation: heroFloat 10s ease-in-out infinite reverse;
+}
+.hero-light-3 {
+  width: 260px;
+  height: 260px;
+  top: 22%;
+  right: 16%;
+  background: radial-gradient(circle, rgba(255,255,255,0.45) 0%, transparent 60%);
+  animation: heroPulse 8s ease-in-out infinite;
+}
+.hero-light-4 {
+  width: 420px;
+  height: 420px;
+  bottom: 10%;
+  left: 10%;
+  background: radial-gradient(circle, rgba(140,215,255,0.45) 0%, transparent 60%);
+  animation: heroFloat 16s ease-in-out infinite 2s;
+}
+
+/* Dark mode — lumières néon */
+html.dark .hero-light-1 {
+  background: radial-gradient(circle, rgba(70,150,255,0.55) 0%, transparent 60%);
+}
+html.dark .hero-light-2 {
+  background: radial-gradient(circle, rgba(150,90,255,0.5) 0%, transparent 60%);
+}
+html.dark .hero-light-3 {
+  background: radial-gradient(circle, rgba(80,220,255,0.45) 0%, transparent 60%);
+}
+html.dark .hero-light-4 {
+  background: radial-gradient(circle, rgba(40,120,230,0.5) 0%, transparent 60%);
+}
+
+@keyframes heroFloat {
+  0%, 100% { transform: translate(0, 0); }
+  33%       { transform: translate(25px, -35px); }
+  66%       { transform: translate(-20px, 22px); }
+}
+@keyframes heroPulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.2); }
 }
 .hero-text {
   @apply text-center text-white px-6 relative z-10;

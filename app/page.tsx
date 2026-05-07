@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { sendContactEmail, type ContactState } from "./actions";
 
 // ────────────────────────────────────────────────────────────────
 // Icons
@@ -71,108 +72,6 @@ function PhoneIcon({ className = "w-4 h-4" }: { className?: string }) {
   );
 }
 
-function CodeIcon({ className = "w-6 h-6" }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      aria-hidden
-    >
-      <polyline points="16 18 22 12 16 6" />
-      <polyline points="8 6 2 12 8 18" />
-    </svg>
-  );
-}
-
-function DatabaseIcon({ className = "w-6 h-6" }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      aria-hidden
-    >
-      <ellipse cx="12" cy="5" rx="9" ry="3" />
-      <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
-      <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
-    </svg>
-  );
-}
-
-function SmartphoneIcon({ className = "w-6 h-6" }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      aria-hidden
-    >
-      <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
-      <line x1="12" y1="18" x2="12.01" y2="18" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function PaletteIcon({ className = "w-6 h-6" }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      aria-hidden
-    >
-      <circle cx="13.5" cy="6.5" r="0.5" fill="currentColor" />
-      <circle cx="17.5" cy="10.5" r="0.5" fill="currentColor" />
-      <circle cx="8.5" cy="7.5" r="0.5" fill="currentColor" />
-      <circle cx="6.5" cy="12.5" r="0.5" fill="currentColor" />
-      <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 011.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" />
-    </svg>
-  );
-}
-
-function GlobeIcon({ className = "w-6 h-6" }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      aria-hidden
-    >
-      <circle cx="12" cy="12" r="10" />
-      <line x1="2" y1="12" x2="22" y2="12" />
-      <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
-    </svg>
-  );
-}
-
-function LayersIcon({ className = "w-6 h-6" }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      aria-hidden
-    >
-      <polygon points="12 2 2 7 12 12 22 7 12 2" />
-      <polyline points="2 17 12 22 22 17" />
-      <polyline points="2 12 12 17 22 12" />
-    </svg>
-  );
-}
-
 function SunIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
     <svg
@@ -236,7 +135,9 @@ function ThemeToggle({
         className="absolute transition-all duration-300"
         style={{
           opacity: dark ? 0 : 1,
-          transform: dark ? "rotate(90deg) scale(0.4)" : "rotate(0deg) scale(1)",
+          transform: dark
+            ? "rotate(90deg) scale(0.4)"
+            : "rotate(0deg) scale(1)",
         }}
       >
         <SunIcon />
@@ -246,7 +147,9 @@ function ThemeToggle({
         className="absolute transition-all duration-300"
         style={{
           opacity: dark ? 1 : 0,
-          transform: dark ? "rotate(0deg) scale(1)" : "rotate(-90deg) scale(0.4)",
+          transform: dark
+            ? "rotate(0deg) scale(1)"
+            : "rotate(-90deg) scale(0.4)",
         }}
       >
         <MoonIcon />
@@ -523,65 +426,172 @@ function SmallProjectCard({
 }
 
 // ────────────────────────────────────────────────────────────────
-// SkillBar
+// TerminalCard
 // ────────────────────────────────────────────────────────────────
 
-type SkillBarProps = {
-  name: string;
-  level: number;
-};
+type SkillItem = { name: string; level?: number };
 
-function SkillBar({ name, level }: SkillBarProps) {
-  const [hovered, setHovered] = useState(false);
+function TerminalCard({ title, items }: { title: string; items: SkillItem[] }) {
+  const [cardHovered, setCardHovered] = useState(false);
+  const hasLevels = items.some((item) => item.level !== undefined);
+
+  const slug = title
+    .toLowerCase()
+    .replace(/ & /g, "-")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 
   return (
-    <li
-      className="px-2 py-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-[#1a3a5c] transition-colors cursor-default"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+    <div
+      className="rounded-xl overflow-hidden border border-gray-200 dark:border-[#1a3a5c] shadow-sm font-mono flex flex-col"
+      onMouseEnter={() => hasLevels && setCardHovered(true)}
+      onMouseLeave={() => hasLevels && setCardHovered(false)}
     >
-      <div className="flex justify-between items-center mb-1.5">
-        <span className="text-gray-700 dark:text-gray-300 text-sm">{name}</span>
-        <span
-          className="text-[#4a7aa8] text-xs font-semibold transition-opacity duration-200"
-          style={{ opacity: hovered ? 1 : 0 }}
-        >
-          {level}%
+      {/* title bar */}
+      <div className="flex items-center gap-1.5 px-3 py-2 bg-gray-100 dark:bg-[#071018] border-b border-gray-200 dark:border-[#1a3a5c]">
+        <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
+        <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+        <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+        <span className="mx-auto text-[13px] text-gray-400 dark:text-[#2a4a6a]">
+          bash — {slug}
         </span>
       </div>
-      <div className="h-1 bg-blue-100 dark:bg-[#1a3a5c] rounded-full overflow-hidden">
-        <div
-          className="h-full bg-[#4a7aa8] rounded-full transition-[width] duration-500 ease-out"
-          style={{ width: hovered ? `${level}%` : "0%" }}
-        />
+      {/* body */}
+      <div className="bg-white dark:bg-[#0a1525] px-4 py-3 flex-1">
+        <p className="text-[13px] mb-2 select-none leading-relaxed">
+          <span className="text-[#28c840]">anaïs</span>
+          <span className="text-gray-400 dark:text-[#2a4a6a]">@portfolio</span>
+          <span className="text-gray-400 dark:text-[#2a4a6a]">:</span>
+          <span className="text-[#4a7aa8]">~/{slug}</span>
+          <span className="text-gray-400 dark:text-[#2a4a6a]">$ </span>
+          <span className="text-gray-700 dark:text-gray-300">ls -1</span>
+        </p>
+        <ul className="space-y-0.5 text-[14px]">
+          {items.map((item, i) => (
+            <li
+              key={item.name}
+              className={`flex items-baseline gap-1.5 ${hasLevels ? "justify-between" : ""}`}
+            >
+              <span className="flex items-baseline gap-1.5">
+                <span className="text-gray-300 dark:text-[#1e3a5c] select-none">
+                  {i === items.length - 1 ? "└─" : "├─"}
+                </span>
+                <span className="text-gray-700 dark:text-[#7ab3e0]">
+                  {item.name}
+                </span>
+              </span>
+              {item.level !== undefined && (
+                <span
+                  className="text-[#4a7aa8] text-[12px] transition-opacity duration-200 select-none"
+                  style={{ opacity: cardHovered ? 1 : 0 }}
+                >
+                  {item.level}%
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+        <p className="text-[13px] mt-2 select-none flex items-center leading-relaxed">
+          <span className="text-[#28c840]">anaïs</span>
+          <span className="text-gray-400 dark:text-[#2a4a6a]">@portfolio</span>
+          <span className="text-gray-400 dark:text-[#2a4a6a]">:</span>
+          <span className="text-[#4a7aa8]">~/{slug}</span>
+          <span className="text-gray-400 dark:text-[#2a4a6a]">$ </span>
+          <span className="inline-block w-[7px] h-[13px] bg-gray-600 dark:bg-[#7ab3e0] animate-pulse ml-0.5 align-text-bottom" />
+        </p>
       </div>
-    </li>
+    </div>
   );
 }
 
 // ────────────────────────────────────────────────────────────────
-// SkillCard
+// Page
 // ────────────────────────────────────────────────────────────────
 
-type SkillItem = { name: string; level: number };
+// ────────────────────────────────────────────────────────────────
+// ContactForm
+// ────────────────────────────────────────────────────────────────
 
-type SkillCardProps = {
-  icon: React.ReactNode;
-  title: string;
-  items: SkillItem[];
-};
+function ContactForm() {
+  const [state, formAction, pending] = useActionState<ContactState, FormData>(
+    sendContactEmail,
+    {},
+  );
 
-function SkillCard({ icon, title, items }: SkillCardProps) {
+  if (state.success) {
+    return (
+      <div className="py-6 text-center">
+        <p className="text-[#28c840] text-lg font-medium">✓ Message envoyé !</p>
+        <p className="text-[#7a9cbf] text-sm mt-1">
+          Je vous répondrai dès que possible.
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-white dark:bg-[#1a2a3e] rounded-2xl p-6 shadow-sm">
-      <div className="text-[#4a7aa8] mb-3">{icon}</div>
-      <h3 className="text-[#4a7aa8] font-semibold text-base mb-3">{title}</h3>
-      <ul className="space-y-1">
-        {items.map((item) => (
-          <SkillBar key={item.name} name={item.name} level={item.level} />
-        ))}
-      </ul>
-    </div>
+    <form action={formAction} className="space-y-4 text-left w-full">
+      <div>
+        <label
+          htmlFor="cf-name"
+          className="block text-[#7a9cbf] text-xs mb-1.5"
+        >
+          Nom
+        </label>
+        <input
+          id="cf-name"
+          name="name"
+          type="text"
+          required
+          autoComplete="name"
+          placeholder="Votre nom"
+          className="w-full bg-[#152535] dark:bg-[#050e17] border border-[#2d4a6a] rounded-lg px-4 py-2.5 text-sm text-white placeholder-[#3a5a7a] focus:outline-none focus:border-[#4a7aa8] transition-colors"
+        />
+      </div>
+      <div>
+        <label
+          htmlFor="cf-email"
+          className="block text-[#7a9cbf] text-xs mb-1.5"
+        >
+          Email
+        </label>
+        <input
+          id="cf-email"
+          name="email"
+          type="email"
+          required
+          autoComplete="email"
+          placeholder="votre@email.com"
+          className="w-full bg-[#152535] dark:bg-[#050e17] border border-[#2d4a6a] rounded-lg px-4 py-2.5 text-sm text-white placeholder-[#3a5a7a] focus:outline-none focus:border-[#4a7aa8] transition-colors"
+        />
+      </div>
+      <div>
+        <label
+          htmlFor="cf-message"
+          className="block text-[#7a9cbf] text-xs mb-1.5"
+        >
+          Message
+        </label>
+        <textarea
+          id="cf-message"
+          name="message"
+          required
+          rows={4}
+          placeholder="Votre message..."
+          className="w-full bg-[#152535] dark:bg-[#050e17] border border-[#2d4a6a] rounded-lg px-4 py-2.5 text-sm text-white placeholder-[#3a5a7a] focus:outline-none focus:border-[#4a7aa8] transition-colors resize-none"
+        />
+      </div>
+
+      {state.error && <p className="text-red-400 text-xs">{state.error}</p>}
+
+      <button
+        type="submit"
+        disabled={pending}
+        className="w-full flex items-center justify-center gap-2 bg-[#2d4a6a] hover:bg-[#3a5a80] disabled:opacity-60 disabled:cursor-not-allowed transition-colors rounded-lg px-5 py-3 text-sm text-white"
+      >
+        {pending ? "Envoi en cours…" : "Envoyer →"}
+      </button>
+    </form>
   );
 }
 
@@ -678,6 +688,11 @@ export default function Home() {
 
       {/* ── Hero ───────────────────────────────────────────────── */}
       <section className="hero section-bg">
+        {/* Lumières d'ambiance */}
+        <div className="hero-light hero-light-1" />
+        <div className="hero-light hero-light-2" />
+        <div className="hero-light hero-light-3" />
+        <div className="hero-light hero-light-4" />
         <div
           className="hero-bg"
           style={{
@@ -820,47 +835,42 @@ export default function Home() {
         <div className="skills-container">
           <h2 className="skills-title">Compétences</h2>
           <div className="skills-grid">
-            <SkillCard
-              icon={<CodeIcon />}
+            <TerminalCard
               title="Frontend"
               items={[
-                { name: "React.js", level: 85 },
-                { name: "React Native", level: 80 },
-                { name: "HTML/CSS", level: 90 },
-                { name: "JavaScript", level: 85 },
+                { name: "React.js" },
+                { name: "React Native" },
+                { name: "HTML/CSS" },
+                { name: "JavaScript" },
               ]}
             />
-            <SkillCard
-              icon={<DatabaseIcon />}
+            <TerminalCard
               title="Backend & BDD"
               items={[
-                { name: "Node.js", level: 80 },
-                { name: "JavaScript", level: 85 },
-                { name: "MongoDB", level: 95 },
-                { name: "Express", level: 80 },
+                { name: "Node.js" },
+                { name: "JavaScript" },
+                { name: "MongoDB" },
+                { name: "Express" },
               ]}
             />
-            <SkillCard
-              icon={<SmartphoneIcon />}
+            <TerminalCard
               title="Mobile"
               items={[
-                { name: "React Native", level: 90 },
-                { name: "Applications iOS", level: 85 },
-                { name: "Applications Android", level: 70 },
-                { name: "Expo", level: 85 },
+                { name: "React Native" },
+                { name: "Applications iOS" },
+                { name: "Applications Android" },
+                { name: "Expo" },
               ]}
             />
-            <SkillCard
-              icon={<PaletteIcon />}
+            <TerminalCard
               title="Design & UX"
               items={[
-                { name: "Figma", level: 100 },
-                { name: "Web Design", level: 75 },
-                { name: "UI/UX", level: 75 },
+                { name: "Figma" },
+                { name: "Web Design" },
+                { name: "UI/UX" },
               ]}
             />
-            <SkillCard
-              icon={<GlobeIcon />}
+            <TerminalCard
               title="Langues"
               items={[
                 { name: "Français (natif)", level: 100 },
@@ -870,14 +880,13 @@ export default function Home() {
                 { name: "Italien", level: 20 },
               ]}
             />
-            <SkillCard
-              icon={<LayersIcon />}
+            <TerminalCard
               title="Soft Skills"
               items={[
-                { name: "Organisation", level: 95 },
-                { name: "Esprit d'analyse", level: 95 },
-                { name: "Curiosité", level: 95 },
-                { name: "Intelligence émotionnelle", level: 95 },
+                { name: "Organisation" },
+                { name: "Esprit d'analyse" },
+                { name: "Curiosité" },
+                { name: "Intelligence émotionnelle" },
               ]}
             />
           </div>
@@ -889,32 +898,33 @@ export default function Home() {
         <div className="contact-container">
           <h2 className="contact-title">Contact</h2>
           <p className="contact-desc">Un projet en tête ? Discutons-en !</p>
-          <div className="contact-links">
-            <a href="mailto:anais.picaut@gmail.com" className="contact-link">
-              <MailIcon className="w-4 h-4" />
-              anais.picaut@gmail.com
-            </a>
-            <a href="tel:+33623871470" className="contact-link">
+
+          <ContactForm />
+
+          <div className="mt-8 pt-6 border-t border-[#2d4a6a] space-y-4">
+            <a href="tel:+33623871470" className="contact-link w-fit mx-auto">
               <PhoneIcon className="w-4 h-4" />
-              06 23 87 14 70
+              +33 6 23 87 14 70
             </a>
-          </div>
-          <p className="contact-location">Caen, France — Tanger, Maroc</p>
-          <div className="contact-social">
-            <a
-              href="https://github.com/unkochiii"
-              aria-label="GitHub"
-              className="text-[#7a9cbf] hover:text-white transition-colors"
-            >
-              <GithubIcon className="w-7 h-7" />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/anais-picaut-68ba8435a/"
-              aria-label="LinkedIn"
-              className="text-[#7a9cbf] hover:text-white transition-colors"
-            >
-              <LinkedinIcon className="w-7 h-7" />
-            </a>
+            <p className="contact-location">
+              Caen, France — Tanger, Maroc — A distance
+            </p>
+            <div className="contact-social">
+              <a
+                href="https://github.com/unkochiii"
+                aria-label="GitHub"
+                className="text-[#7a9cbf] hover:text-white transition-colors"
+              >
+                <GithubIcon className="w-7 h-7" />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/anais-picaut-68ba8435a/"
+                aria-label="LinkedIn"
+                className="text-[#7a9cbf] hover:text-white transition-colors"
+              >
+                <LinkedinIcon className="w-7 h-7" />
+              </a>
+            </div>
           </div>
         </div>
       </section>
