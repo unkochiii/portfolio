@@ -1,26 +1,191 @@
 @import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Applied during theme switch only — prevents interfering with hover transitions */
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
+  transition: background-color 0.35s ease, color 0.3s ease,
+    border-color 0.3s ease, fill 0.3s ease, stroke 0.3s ease !important;
+}
+
+/* ── Navbar ─────────────────────────────────────────────────────── */
+.nav {
+  @apply sticky top-0 z-50 bg-white border-b border-gray-200;
+}
+html.dark .nav {
+  background-color: #0d1b2a;
+  border-color: #1a3a5c;
+}
+
+.nav-container {
+  @apply max-w-6xl mx-auto px-6 h-14 flex items-center justify-between;
+}
+.nav-brand {
+  @apply flex items-center gap-3;
+}
+.nav-links {
+  @apply flex items-center gap-6 text-sm text-gray-600;
+}
+html.dark .nav-links {
+  color: #8aaac5;
+}
+
+/* ── Hero ────────────────────────────────────────────────────────── */
+.hero {
+  @apply min-h-screen flex items-center justify-center relative overflow-hidden;
+}
+.hero-bg {
+  @apply absolute bottom-1/4 left-1/4 w-72 h-72 rounded-full pointer-events-none;
+}
+.hero-text {
+  @apply text-center text-white px-6 relative z-10;
+}
+.hero-title {
+  @apply text-5xl font-bold mb-5 tracking-tight;
+}
+.hero-badge {
+  @apply inline-block border border-white/50 rounded-full px-5 py-1.5 text-sm mb-4 bg-white/10;
+}
+.hero-desc {
+  @apply text-white/80 text-sm mb-6;
+}
+.hero-quote {
+  @apply italic text-2xl font-light mb-10 leading-snug;
+}
+.hero-btn {
+  @apply inline-block border border-white rounded-lg px-6 py-2.5 text-sm hover:bg-white hover:text-[#6b8fb5] transition-colors;
+}
+
+/* ── Sections ────────────────────────────────────────────────────── */
+.section {
+  @apply py-20 px-6;
+}
+.section-bg {
+  background: linear-gradient(135deg, #6b8fb5 0%, #7a9fc5 100%);
+}
+html.dark .section-bg {
+  background: linear-gradient(135deg, #0d1b2a 0%, #122b47 100%);
+}
+
+.container {
+  @apply max-w-5xl mx-auto;
+}
+.title {
+  @apply text-3xl font-bold text-white text-center mb-12;
+}
+.subtitle {
+  @apply text-white font-semibold text-lg mb-6;
+}
+html.dark .title {
+  color: #dce9f5;
+}
+html.dark .subtitle {
+  color: #dce9f5;
+}
+
+.grid-main {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-6 mb-16;
+}
+.grid-small {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5;
+}
+
+/* ── About ───────────────────────────────────────────────────────── */
+.about {
+  @apply py-20 px-6 bg-white;
+}
+html.dark .about {
+  background-color: #0f172a;
+}
+
+.about-container {
+  @apply max-w-3xl mx-auto;
+}
+.about-title {
+  @apply text-3xl font-bold text-gray-800 text-center mb-10;
+}
+html.dark .about-title {
+  color: #dce9f5;
+}
+
+.about-card {
+  @apply bg-white rounded-2xl border border-gray-100 shadow-sm p-8 space-y-4 text-gray-700 text-sm leading-relaxed;
+}
+html.dark .about-card {
+  background-color: #1a2a3e;
+  border-color: #2a3f5a;
+  color: #a8c4d8;
+}
+
+/* ── Skills ──────────────────────────────────────────────────────── */
+.skills {
+  @apply py-20 px-6;
+}
+.skills-container {
+  @apply max-w-5xl mx-auto;
+}
+.skills-title {
+  @apply text-3xl font-bold text-white text-center mb-12;
+}
+html.dark .skills-title {
+  color: #dce9f5;
+}
+.skills-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5;
+}
+
+/* ── Contact ─────────────────────────────────────────────────────── */
+.contact {
+  @apply py-20 px-6;
+}
+.contact-bg {
+  background: #1e2d3d;
+}
+html.dark .contact-bg {
+  background: #07111a;
+}
+
+.contact-container {
+  @apply max-w-xl mx-auto text-center text-white;
+}
+.contact-title {
+  @apply text-3xl font-bold mb-3;
+}
+.contact-desc {
+  @apply text-[#7a9cbf] mb-8;
+}
+.contact-links {
+  @apply flex flex-col sm:flex-row gap-4 justify-center mb-8;
+}
+.contact-link {
+  @apply flex items-center gap-2 bg-[#2d4a6a] hover:bg-[#3a5a80] transition-colors rounded-lg px-5 py-3 text-sm;
+}
+.contact-location {
+  @apply text-[#7a9cbf] text-sm mb-6;
+}
+.contact-social {
+  @apply flex justify-center gap-5;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────── */
+.footer {
+  @apply py-5 text-center text-sm text-[#4a6a8a];
+}
+.footer-bg {
+  background: #152535;
+}
+html.dark .footer-bg {
+  background: #040c14;
+}
+html.dark .footer {
+  color: #3a5a7a;
 }
