@@ -397,6 +397,25 @@ function SunIcon({ className = "w-4 h-4" }: { className?: string }) {
   );
 }
 
+function HamburgerIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden>
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="18" x2="21" y2="18" />
+    </svg>
+  );
+}
+
+function XIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden>
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  );
+}
+
 function MoonIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -714,6 +733,7 @@ function ContactForm({ t }: { t: ContactFormT }) {
 export default function Home() {
   const [dark, setDark] = useState(false);
   const [lang, setLang] = useState<Lang>("en");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     setDark(document.documentElement.classList.contains("dark"));
@@ -751,7 +771,9 @@ export default function Home() {
               <LinkedinIcon className="w-5 h-5" />
             </a>
           </div>
-          <div className="flex items-center gap-4">
+
+          {/* Desktop nav */}
+          <div className="hidden md:flex items-center gap-4">
             <ul className="nav-links">
               <li><a href="#projets" className="hover:text-gray-900 dark:hover:text-white transition-colors">{T.nav.projects}</a></li>
               <li><a href="#apropos" className="hover:text-gray-900 dark:hover:text-white transition-colors">{T.nav.about}</a></li>
@@ -761,7 +783,41 @@ export default function Home() {
             <LangDropdown lang={lang} setLang={setLang} options={T.langOptions} />
             <ThemeToggle dark={dark} onToggle={toggleDark} labelLight={T.theme.toLight} labelDark={T.theme.toDark} />
           </div>
+
+          {/* Mobile controls */}
+          <div className="flex md:hidden items-center gap-1">
+            <LangDropdown lang={lang} setLang={setLang} options={T.langOptions} />
+            <ThemeToggle dark={dark} onToggle={toggleDark} labelLight={T.theme.toLight} labelDark={T.theme.toDark} />
+            <button
+              onClick={() => setMobileMenuOpen((o) => !o)}
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+              className="w-8 h-8 flex items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-[#1a3a5c] dark:hover:text-gray-100 transition-colors"
+            >
+              {mobileMenuOpen ? <XIcon /> : <HamburgerIcon />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile menu panel */}
+        {mobileMenuOpen && (
+          <div className="md:hidden absolute left-0 right-0 top-full bg-white dark:bg-[#0d1b2a] border-b border-gray-200 dark:border-[#1a3a5c] shadow-lg z-50 px-6 py-1 flex flex-col">
+            {[
+              { href: "#projets", label: T.nav.projects },
+              { href: "#apropos", label: T.nav.about },
+              { href: "#competences", label: T.nav.skills },
+              { href: "#contact", label: T.nav.contact },
+            ].map(({ href, label }) => (
+              <a
+                key={href}
+                href={href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-3 text-sm text-gray-700 dark:text-[#8aaac5] hover:text-gray-900 dark:hover:text-white border-b border-gray-100 dark:border-[#1e3a5c] last:border-0 transition-colors"
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+        )}
       </nav>
 
       {/* ── Hero ───────────────────────────────────────────────── */}
