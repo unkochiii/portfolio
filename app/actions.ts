@@ -26,14 +26,11 @@ export async function sendContactEmail(
   const message = String(formData.get("message") ?? "").trim();
 
   if (!name || !email || !message) {
-    return { error: "Tous les champs sont requis." };
+    return { error: "EMPTY_FIELDS" as const };
   }
 
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    return {
-      error:
-        "Configuration email manquante. Contactez-moi directement par téléphone.",
-    };
+    return { error: "SEND_ERROR" as const };
   }
 
   try {
