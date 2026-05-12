@@ -1,8 +1,11 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
-  reactCompiler: true,
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: "export", // Active le mode statique
+  distDir: "out", // ou 'dist' si tu veux
+  images: {
+    unoptimized: true, // Obligatoire sur hébergement mutualisé
+  },
+  // Si tu as des Server Actions → il faudra les supprimer ou les remplacer
 };
 
-export default nextConfig;
+module.exports = nextConfig;
