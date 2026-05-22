@@ -122,7 +122,14 @@ const translations = {
           "Application mobile complète pour la communauté francophone de Tanger. Fil d'actualité sans algorithme, marketplace, annuaire de commerces, immobilier et agenda culturel. Une solution tout-en-un pour simplifier la vie des Tangérois.",
         label:
           "Cette application a été développée pour un usage privé ; le dépôt de code ne peut donc pas être partagé publiquement.",
-        tags: ["React Native", "Node.js", "MongoDB", "API REST", "En test"],
+        tags: [
+          "React Native",
+          "Node.js",
+          "MongoDB",
+          "API REST",
+          "Disponible en store iOS",
+          "test sur Google",
+        ],
       },
 
       brainflow: {
@@ -287,7 +294,14 @@ const translations = {
           "Full-featured mobile app for Tangier's French-speaking community. Algorithm-free news feed, marketplace, business directory, real estate, and cultural events. An all-in-one solution to simplify life in Tangier.",
         label:
           "This application was developed for private use; the code repository cannot be shared publicly.",
-        tags: ["React Native", "Node.js", "MongoDB", "API REST", "In testing"],
+        tags: [
+          "React Native",
+          "Node.js",
+          "MongoDB",
+          "API REST",
+          "Available on iOS Store",
+          "test sur Google",
+        ],
       },
 
       brainflow: {
@@ -460,7 +474,8 @@ const translations = {
           "Node.js",
           "MongoDB",
           "API REST",
-          "قيد الاختبار",
+          "متوفر على متجر iOS",
+          "test sur Google",
         ],
       },
 
@@ -626,7 +641,14 @@ const translations = {
           "Kompletná mobilná aplikácia pre frankofonné komunity v Tangeri. Newsfeed bez algoritmu, marketplace, adresár obchodov, nehnuteľnosti a kultúrny program. Riešenie všetko-v-jednom pre zjednodušenie života v Tangeri.",
         label:
           "Táto aplikácia bola vyvinutá na súkromné použitie; repozitár kódu preto nemôže byť zdieľaný verejne.",
-        tags: ["React Native", "Node.js", "MongoDB", "API REST", "V testovaní"],
+        tags: [
+          "React Native",
+          "Node.js",
+          "MongoDB",
+          "API REST",
+          "Dostupné v iOS Store",
+          "test sur Google",
+        ],
       },
 
       brainflow: {
@@ -1024,7 +1046,7 @@ function Lightbox({ images, startIndex, title, onClose }: LightboxProps) {
 
 function Tag({ label }: { label: string }) {
   return (
-    <span className="px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-600 dark:bg-[#1e3a5f] dark:text-[#7ab3e0] font-medium">
+    <span className="project-tag px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-600 dark:bg-[#1e3a5f] dark:text-[#7ab3e0] font-medium whitespace-nowrap">
       {label}
     </span>
   );
@@ -1051,7 +1073,7 @@ function MainProjectCard({
 
   return (
     <>
-      <div className="bg-white dark:bg-[#1a2a3e] rounded-2xl p-6 flex flex-col gap-4 shadow-sm">
+      <div className="project-card bg-white dark:bg-[#1a2a3e] rounded-2xl p-4 sm:p-6 flex flex-col gap-4 shadow-sm">
         <div className="flex justify-between items-start">
           <h3 className="text-[#4a7aa8] font-semibold text-lg leading-snug">
             {title}
@@ -1084,12 +1106,12 @@ function MainProjectCard({
             ))}
         </div>
         {images && images.length > 0 && (
-          <div className="flex gap-2 justify-center">
+          <div className="project-phone-strip flex gap-2 justify-center">
             {images.map((src, i) => (
               <button
                 key={i}
                 onClick={() => setLightboxIndex(i)}
-                className="relative w-20 h-36 rounded-lg overflow-hidden flex-shrink-0 cursor-zoom-in group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4a7aa8]"
+                className="project-phone-shot relative rounded-lg overflow-hidden flex-shrink-0 cursor-zoom-in group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4a7aa8]"
                 aria-label={`Enlarge screenshot ${i + 1}`}
               >
                 <Image
@@ -1107,7 +1129,7 @@ function MainProjectCard({
             ))}
           </div>
         )}
-        <p className="text-gray-600 dark:text-[#94aac5] text-sm leading-relaxed">
+        <p className="project-description text-gray-600 dark:text-[#94aac5] text-sm leading-relaxed">
           {description}
         </p>
         <div className="flex flex-wrap gap-2 mt-auto">
@@ -1147,7 +1169,7 @@ function SmallProjectCard({
 
   return (
     <>
-      <div className="bg-white dark:bg-[#1a2a3e] rounded-2xl p-5 flex flex-col gap-3 shadow-sm">
+      <div className="project-card bg-white dark:bg-[#1a2a3e] rounded-2xl p-4 sm:p-5 flex flex-col gap-3 shadow-sm">
         <div className="flex justify-between items-start">
           <h3 className="text-[#4a7aa8] font-semibold text-base">{title}</h3>
           <a
@@ -1163,7 +1185,7 @@ function SmallProjectCard({
         {image && (
           <button
             onClick={() => setOpen(true)}
-            className="relative w-full h-24 rounded-lg overflow-hidden cursor-zoom-in group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4a7aa8]"
+            className="small-project-image relative w-full h-24 rounded-lg overflow-hidden cursor-zoom-in group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4a7aa8]"
             aria-label="Enlarge image"
           >
             <Image
@@ -1179,10 +1201,10 @@ function SmallProjectCard({
             </div>
           </button>
         )}
-        <p className="text-gray-600 dark:text-[#94aac5] text-sm">
+        <p className="project-description text-gray-600 dark:text-[#94aac5] text-sm">
           {description}
         </p>
-        <span className="text-[#4a7aa8] text-sm">{tech}</span>
+        <span className="project-tech text-[#4a7aa8] text-sm">{tech}</span>
       </div>
       {open && image && (
         <Lightbox
