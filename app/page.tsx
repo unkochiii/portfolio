@@ -128,7 +128,7 @@ const translations = {
           "MongoDB",
           "API REST",
           "Disponible en store iOS",
-          "test sur Google",
+          "Disponible en store Android",
         ],
       },
 
@@ -300,7 +300,7 @@ const translations = {
           "MongoDB",
           "API REST",
           "Available on iOS Store",
-          "test sur Google",
+          "Available on Android Store",
         ],
       },
 
@@ -475,7 +475,7 @@ const translations = {
           "MongoDB",
           "API REST",
           "متوفر على متجر iOS",
-          "test sur Google",
+          "متوفر على متجر Android",
         ],
       },
 
@@ -647,7 +647,7 @@ const translations = {
           "MongoDB",
           "API REST",
           "Dostupné v iOS Store",
-          "test sur Google",
+          "Dostupné v Android Store",
         ],
       },
 
