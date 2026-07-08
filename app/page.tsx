@@ -8,6 +8,24 @@ import { sendContactEmail, type ContactState } from "./actions";
 
 type Lang = "fr" | "en" | "ar" | "sk";
 type SkillItem = { name: string; level?: number };
+type ProjectImage = { src: string; alt: string };
+type ProjectImageInput = string | ProjectImage;
+type CvTimelineItem = {
+  title: string;
+  organization?: string;
+  dates: string;
+  description?: string;
+  points?: string[];
+  technologies?: string[];
+};
+
+type LightboxLabels = {
+  dialogLabel: string;
+  close: string;
+  previous: string;
+  next: string;
+  showImage: string;
+};
 
 type ContactFormT = {
   name: string;
@@ -40,6 +58,7 @@ const translations = {
       projects: "Projets",
       about: "À propos",
       skills: "Compétences",
+      cv: "CV",
       contact: "Contact",
     },
     hero: {
@@ -55,7 +74,18 @@ const translations = {
       otherProjects: "Autres Projets & Réalisations",
       about: "À propos de moi",
       skills: "Compétences",
+      cv: "CV",
       contact: "Contact",
+    },
+    lightbox: {
+      dialogLabel: "{title} — image {current}",
+      close: "Fermer la vue plein écran",
+      previous: "Image précédente",
+      next: "Image suivante",
+      showImage: "Afficher l’image {index}",
+    },
+    projectGallery: {
+      openImage: "Agrandir l’image {index} du projet {title}",
     },
     about: {
       p1: "Passionnée par le développement web et mobile, je crée des solutions digitales sur mesure qui allient design moderne et fonctionnalités robustes.",
@@ -116,6 +146,30 @@ const translations = {
       },
     ],
     projects: {
+      oryx: {
+        title: "Oryx Dubaï",
+        label: "Stage à distance de 3 mois · Dubaï · HealthTech / IA",
+        description:
+          "Stage à distance de 3 mois avec une startup HealthTech basée à Dubaï, utilisant l’IA pour simplifier certaines actions dans des cliniques médicales. J’ai réalisé la refonte complète de la page de statistiques regroupant les données des cliniques et contribué à plusieurs fonctionnalités secondaires du site.",
+        tags: [
+          "React.js",
+          "typescript",
+          "Java",
+          "SQL",
+          "Highcharts",
+          "UI/UX",
+          "Git",
+          "IA",
+        ],
+        imageAlts: [
+          "Capture d’écran du projet Oryx Dubaï — page statistiques",
+          "Interface du projet Oryx Dubaï",
+          "Aperçu de la plateforme Oryx Dubaï",
+        ],
+        recommendationLabel: "Voir la lettre de recommandation",
+        recommendationAriaLabel:
+          "Voir la lettre de recommandation du stage Oryx Dubaï",
+      },
       tanjatips: {
         title: "TanjaTips",
         description:
@@ -179,6 +233,168 @@ const translations = {
           "Frontend de suivi développeur pour pratiquer l'UI maintenable et ma propre réflexion technique.",
       },
     },
+    cv: {
+      title: "CV",
+      intro:
+        "Un aperçu clair de mon profil fullstack, de mon expérience internationale, de mes compétences techniques et de ma formation.",
+      sidebarLabel: "Détails du CV",
+      profileLabel: "Profil",
+      name: "Anaïs Picaut",
+      role: "Développeuse web fullstack internationale",
+      status:
+        "Actuellement en formation Conception & Développement d’Applications (RNCP niveau 6 — équivalent Bachelor).",
+      contactTitle: "Contact",
+      contact: {
+        email: "Email",
+        phone: "Téléphone",
+        location: "Localisation",
+        license: "Permis",
+        emailValue: "anais.picaut@gmail.com",
+        phoneValue: "+33 6 23 87 14 70",
+        locationValue: "Caen, France / Tanger, Maroc",
+        licenseValue: "Permis B",
+      },
+      technicalSkillsTitle: "Compétences techniques",
+      technicalSkills: [
+        {
+          category: "Frontend",
+          skills: [
+            "React.js",
+            "React Native",
+            "JavaScript",
+            "HTML / CSS",
+            "Figma",
+          ],
+        },
+        {
+          category: "Backend",
+          skills: ["Node.js", "Express.js", "Java Spring Boot", "MongoDB"],
+        },
+        {
+          category: "Outils",
+          skills: ["Git / GitHub", "VS Code", "Postman"],
+        },
+      ],
+      languagesTitle: "Langues",
+      languages: [
+        {
+          name: "Français",
+          level: "Natif",
+        },
+        {
+          name: "Anglais",
+          level: "Avancé",
+        },
+        {
+          name: "Espagnol",
+          level: "Intermédiaire",
+        },
+        {
+          name: "Arabe",
+          level: "Intermédiaire",
+        },
+        {
+          name: "Italien",
+          level: "Débutant",
+        },
+      ],
+      qualitiesTitle: "Qualités",
+      qualities: [
+        "Curiosité",
+        "Sens du détail",
+        "Esprit analytique",
+        "Adaptabilité",
+        "Esprit d’équipe",
+      ],
+      introductionLabel: "Introduction",
+      profileTitle: "Développeuse web fullstack internationale",
+      profileText:
+        "Développeuse web fullstack passionnée par la création d’applications utiles et d’expériences utilisateur solides. Curieuse, rigoureuse et autonome, j’aime résoudre des défis techniques et contribuer à des projets innovants.",
+      experienceTitle: "Expérience professionnelle",
+      educationTitle: "Formation",
+      technologiesLabel: "Technologies",
+      experience: [
+        {
+          title: "Développeuse web fullstack - Freelance",
+          organization: "TanjaTips - Tanger, Maroc",
+          dates: "Déc. 2025 - Aujourd’hui",
+          description:
+            "Développement d’une plateforme web locale de recommandations pour les utilisateurs à Tanger.",
+          points: [
+            "Développement fullstack de l’application",
+            "Conception UI et gestion de la base de données",
+            "Implémentation de nouvelles fonctionnalités selon les besoins utilisateurs",
+            "Maintenance continue et optimisation des performances",
+          ],
+          technologies: [
+            "React.js",
+            "Node.js",
+            "Express.js",
+            "MongoDB",
+            "JavaScript",
+            "Git",
+          ],
+        },
+        {
+          title: "Web Developer Intern",
+          organization: "Oryx - Dubaï, Émirats Arabes Unis",
+          dates: "Fév. 2026 - Mai 2026",
+          description:
+            "Contribution à l’évolution d’un site de startup existant intégrant des solutions d’intelligence artificielle.",
+          points: [
+            "Développement de fonctionnalités frontend en React.js selon les besoins utilisateurs",
+            "Création d’une page complète de statistiques avec Java Spring Boot et React.js",
+            "Collaboration avec les équipes produit et design pour améliorer l’expérience utilisateur",
+            "Tests, débogage et optimisation des performances",
+          ],
+          technologies: [
+            "React.js",
+            "Java",
+            "Spring Boot",
+            "JavaScript",
+            "HTML/CSS",
+            "Git",
+          ],
+        },
+      ],
+      education: [
+        {
+          title: "Conceptrice et développeuse d’applications",
+          organization: "RNCP niveau 6 — équivalent Bachelor",
+          dates: "Session 2026",
+          points: [
+            "JavaScript",
+            "Gestion backend et serveur de base de données",
+            "Intégration HTML/CSS",
+            "React.js / React Native",
+          ],
+        },
+        {
+          title: "Études en sciences de la santé et ingénierie biomédicale",
+          organization:
+            "Université de Caen & École d’ingénieurs ESIX — Caen, France",
+          dates: "2023 - 2025",
+          description:
+            "Deux années centrées sur les fondamentaux scientifiques et la résolution pratique de problèmes.",
+        },
+        {
+          title: "Baccalauréat français — Mention",
+          organization: "Lycée Français AEFE Regnault — Tanger, Maroc",
+          dates: "Session 2023",
+        },
+        {
+          title: "Diplôme français d’espagnol langue étrangère A2",
+          organization: "Lycée Français AEFE Regnault — Tanger, Maroc",
+          dates: "Session 2021",
+          description:
+            "Étude approfondie de la langue espagnole et immersion immédiate dans le pays afin d’apprendre et de maîtriser pleinement la langue.",
+        },
+        {
+          title: "Certificat Master en psychologie",
+          dates: "Session 2025",
+        },
+      ],
+    },
     contact: {
       desc: "Un projet en tête ? Discutons-en !",
       location: "Caen, France — Tanger, Maroc — A distance",
@@ -212,6 +428,7 @@ const translations = {
       projects: "Projects",
       about: "About",
       skills: "Skills",
+      cv: "Resume",
       contact: "Contact",
     },
     hero: {
@@ -227,7 +444,18 @@ const translations = {
       otherProjects: "Other Projects & Achievements",
       about: "About me",
       skills: "Skills",
+      cv: "Resume",
       contact: "Contact",
+    },
+    lightbox: {
+      dialogLabel: "{title} — image {current}",
+      close: "Close full-screen view",
+      previous: "Previous image",
+      next: "Next image",
+      showImage: "Show image {index}",
+    },
+    projectGallery: {
+      openImage: "Enlarge image {index} from {title}",
     },
     about: {
       p1: "Passionate about web and mobile development, I build custom digital solutions that combine modern design with robust functionality.",
@@ -288,6 +516,30 @@ const translations = {
       },
     ],
     projects: {
+      oryx: {
+        title: "Oryx Dubaï",
+        label: "Three-month remote internship · Dubai · HealthTech / AI",
+        description:
+          "Three-month remote internship with a Dubai-based HealthTech startup using AI to simplify certain actions in medical clinics. I completed the full redesign of the statistics page gathering clinic data and contributed to several secondary features across the website.",
+        tags: [
+          "React.js",
+          "JavaScript",
+          "HTML/CSS",
+          "Java Spring Boot",
+          "UI/UX",
+          "Git",
+          "HealthTech",
+          "AI",
+        ],
+        imageAlts: [
+          "Screenshot of the Oryx Dubai project — statistics page",
+          "Interface of the Oryx Dubai project",
+          "Preview of the Oryx Dubai platform",
+        ],
+        recommendationLabel: "View recommendation letter",
+        recommendationAriaLabel:
+          "View the recommendation letter for the Oryx Dubai internship",
+      },
       tanjatips: {
         title: "TanjaTips",
         description:
@@ -351,6 +603,168 @@ const translations = {
           "Developer tracking frontend to practise maintainable UI and my own technical thinking.",
       },
     },
+    cv: {
+      title: "Resume",
+      intro:
+        "A concise overview of my fullstack profile, international experience, technical skills, and education.",
+      sidebarLabel: "Resume details",
+      profileLabel: "Profile",
+      name: "Anaïs Picaut",
+      role: "International Fullstack Web Developer",
+      status:
+        "Currently studying Application Design & Development (RNCP Level 6 - Bachelor's Degree equivalent).",
+      contactTitle: "Contact",
+      contact: {
+        email: "Email",
+        phone: "Phone",
+        location: "Location",
+        license: "License",
+        emailValue: "anais.picaut@gmail.com",
+        phoneValue: "+33 6 23 87 14 70",
+        locationValue: "Caen, France / Tangier, Morocco",
+        licenseValue: "Driving License B",
+      },
+      technicalSkillsTitle: "Technical Skills",
+      technicalSkills: [
+        {
+          category: "Frontend",
+          skills: [
+            "React.js",
+            "React Native",
+            "JavaScript",
+            "HTML / CSS",
+            "Figma",
+          ],
+        },
+        {
+          category: "Backend",
+          skills: ["Node.js", "Express.js", "Java Spring Boot", "MongoDB"],
+        },
+        {
+          category: "Tools",
+          skills: ["Git / GitHub", "VS Code", "Postman"],
+        },
+      ],
+      languagesTitle: "Languages",
+      languages: [
+        {
+          name: "French",
+          level: "Native",
+        },
+        {
+          name: "English",
+          level: "Advanced",
+        },
+        {
+          name: "Spanish",
+          level: "Intermediate",
+        },
+        {
+          name: "Arabic",
+          level: "Intermediate",
+        },
+        {
+          name: "Italian",
+          level: "Beginner",
+        },
+      ],
+      qualitiesTitle: "Qualities",
+      qualities: [
+        "Curiosity",
+        "Attention to detail",
+        "Analytical mindset",
+        "Adaptability",
+        "Team spirit",
+      ],
+      introductionLabel: "Introduction",
+      profileTitle: "International Fullstack Web Developer",
+      profileText:
+        "Passionate fullstack web developer focused on creating useful applications and delivering strong user experiences. Curious, detail-oriented, and autonomous, I enjoy solving technical challenges and contributing to innovative projects.",
+      experienceTitle: "Professional Experience",
+      educationTitle: "Education",
+      technologiesLabel: "Technologies",
+      experience: [
+        {
+          title: "Fullstack Web Developer - Freelance",
+          organization: "TanjaTips - Tangier, Morocco",
+          dates: "Dec 2025 - Present",
+          description:
+            "Development of a local recommendations web platform for users in Tangier.",
+          points: [
+            "Fullstack application development",
+            "UI design and database management",
+            "Implementation of new features based on user needs",
+            "Continuous maintenance and performance optimization",
+          ],
+          technologies: [
+            "React.js",
+            "Node.js",
+            "Express.js",
+            "MongoDB",
+            "JavaScript",
+            "Git",
+          ],
+        },
+        {
+          title: "Web Developer Intern",
+          organization: "Oryx - Dubai, United Arab Emirates",
+          dates: "Feb 2026 - May 2026",
+          description:
+            "Contributed to the evolution of an existing startup website integrating artificial intelligence solutions.",
+          points: [
+            "Developed frontend features in React.js based on user requirements",
+            "Built a complete statistics page using Java Spring Boot and React.js",
+            "Collaborated with product and design teams to improve user experience",
+            "Testing, debugging, and performance optimization",
+          ],
+          technologies: [
+            "React.js",
+            "Java",
+            "Spring Boot",
+            "JavaScript",
+            "HTML/CSS",
+            "Git",
+          ],
+        },
+      ],
+      education: [
+        {
+          title: "Application Developer & Designer",
+          organization: "RNCP Level 6 — Bachelor Equivalent",
+          dates: "Session 2026",
+          points: [
+            "JavaScript",
+            "Backend & database server management",
+            "HTML/CSS integration",
+            "React.js / React Native",
+          ],
+        },
+        {
+          title: "Health Sciences & Biomedical Engineering Studies",
+          organization:
+            "University of Caen & ESIX Engineering School — Caen, France",
+          dates: "2023 - 2025",
+          description:
+            "Two years focused on scientific fundamentals and practical problem-solving.",
+        },
+        {
+          title: "French Baccalaureate — Honors",
+          organization: "Lycée Français AEFE Regnault — Tangier, Morocco",
+          dates: "Session 2023",
+        },
+        {
+          title: "French Diploma in Spanish as a Foreign Language A2",
+          organization: "Lycée Français AEFE Regnault — Tangier, Morocco",
+          dates: "Session 2021",
+          description:
+            "In-depth study of the Spanish language and immediate immersion in the country to learn and fully master the language.",
+        },
+        {
+          title: "Psychology Master Certificate",
+          dates: "Session 2025",
+        },
+      ],
+    },
     contact: {
       desc: "Have a project in mind? Let's talk!",
       location: "Caen, France — Tangier, Morocco — Remote",
@@ -387,6 +801,7 @@ const translations = {
       projects: "المشاريع",
       about: "عني",
       skills: "المهارات",
+      cv: "السيرة الذاتية",
       contact: "تواصل",
     },
     hero: {
@@ -402,7 +817,18 @@ const translations = {
       otherProjects: "مشاريع ومنجزات أخرى",
       about: "عني",
       skills: "المهارات",
+      cv: "السيرة الذاتية",
       contact: "تواصل",
+    },
+    lightbox: {
+      dialogLabel: "{title} — الصورة {current}",
+      close: "إغلاق العرض بملء الشاشة",
+      previous: "الصورة السابقة",
+      next: "الصورة التالية",
+      showImage: "عرض الصورة {index}",
+    },
+    projectGallery: {
+      openImage: "تكبير الصورة {index} من مشروع {title}",
     },
     about: {
       p1: "أنا شغوفة بتطوير الويب والموبايل، وأبني حلولاً رقمية مخصصة تجمع بين التصميم العصري والوظائف القوية.",
@@ -463,6 +889,30 @@ const translations = {
       },
     ],
     projects: {
+      oryx: {
+        title: "Oryx Dubaï",
+        label:
+          "تدريب عن بُعد لمدة 3 أشهر · دبي · HealthTech / الذكاء الاصطناعي",
+        description:
+          "تدريب عن بُعد لمدة ثلاثة أشهر مع شركة HealthTech ناشئة مقرها دبي تستخدم الذكاء الاصطناعي لتبسيط بعض الإجراءات داخل العيادات الطبية. قمت بإعادة تصميم كاملة لصفحة الإحصائيات التي تجمع بيانات العيادات، كما ساهمت في إضافة عدة ميزات ثانوية في باقي الموقع.",
+        tags: [
+          "React.js",
+          "JavaScript",
+          "HTML/CSS",
+          "Java Spring Boot",
+          "UI/UX",
+          "Git",
+          "HealthTech",
+          "الذكاء الاصطناعي",
+        ],
+        imageAlts: [
+          "لقطة شاشة من مشروع أوريكس دبي — صفحة الإحصائيات",
+          "واجهة مشروع أوريكس دبي",
+          "معاينة لمنصة أوريكس دبي",
+        ],
+        recommendationLabel: "عرض رسالة التوصية",
+        recommendationAriaLabel: "عرض رسالة التوصية الخاصة بتدريب أوريكس دبي",
+      },
       tanjatips: {
         title: "TanjaTips",
         description:
@@ -523,6 +973,166 @@ const translations = {
         description: "واجهة أمامية لتتبع المطور لممارسة UI القابل للصيانة.",
       },
     },
+    cv: {
+      title: "السيرة الذاتية",
+      intro:
+        "نظرة موجزة على ملفي كمطورة Fullstack، وخبرتي الدولية، ومهاراتي التقنية، ومساري التعليمي.",
+      sidebarLabel: "تفاصيل السيرة الذاتية",
+      profileLabel: "الملف الشخصي",
+      name: "Anaïs Picaut",
+      role: "مطورة ويب Fullstack دولية",
+      status:
+        "أدرس حاليًا تصميم وتطوير التطبيقات (RNCP المستوى 6 — ما يعادل درجة البكالوريوس).",
+      contactTitle: "التواصل",
+      contact: {
+        email: "البريد الإلكتروني",
+        phone: "الهاتف",
+        location: "الموقع",
+        license: "رخصة القيادة",
+        emailValue: "anais.picaut@gmail.com",
+        phoneValue: "+33 6 23 87 14 70",
+        locationValue: "كاين، فرنسا / طنجة، المغرب",
+        licenseValue: "رخصة قيادة B",
+      },
+      technicalSkillsTitle: "المهارات التقنية",
+      technicalSkills: [
+        {
+          category: "الواجهة الأمامية",
+          skills: [
+            "React.js",
+            "React Native",
+            "JavaScript",
+            "HTML / CSS",
+            "Figma",
+          ],
+        },
+        {
+          category: "الخلفية",
+          skills: ["Node.js", "Express.js", "Java Spring Boot", "MongoDB"],
+        },
+        {
+          category: "الأدوات",
+          skills: ["Git / GitHub", "VS Code", "Postman"],
+        },
+      ],
+      languagesTitle: "اللغات",
+      languages: [
+        {
+          name: "الفرنسية",
+          level: "اللغة الأم",
+        },
+        {
+          name: "الإنجليزية",
+          level: "متقدم",
+        },
+        {
+          name: "الإسبانية",
+          level: "متوسط",
+        },
+        {
+          name: "العربية",
+          level: "متوسط",
+        },
+        {
+          name: "الإيطالية",
+          level: "مبتدئ",
+        },
+      ],
+      qualitiesTitle: "الصفات",
+      qualities: [
+        "الفضول",
+        "الاهتمام بالتفاصيل",
+        "التفكير التحليلي",
+        "القدرة على التكيف",
+        "روح الفريق",
+      ],
+      introductionLabel: "مقدمة",
+      profileTitle: "مطورة ويب Fullstack دولية",
+      profileText:
+        "مطورة ويب Fullstack شغوفة بإنشاء تطبيقات مفيدة وتقديم تجارب مستخدم قوية. أتميز بالفضول والدقة والاستقلالية، وأستمتع بحل التحديات التقنية والمساهمة في مشاريع مبتكرة.",
+      experienceTitle: "الخبرة المهنية",
+      educationTitle: "التعليم",
+      technologiesLabel: "التقنيات",
+      experience: [
+        {
+          title: "مطورة ويب Fullstack - مستقلة",
+          organization: "TanjaTips - طنجة، المغرب",
+          dates: "ديسمبر 2025 - حتى الآن",
+          description:
+            "تطوير منصة ويب محلية للتوصيات موجهة للمستخدمين في طنجة.",
+          points: [
+            "تطوير التطبيق بشكل Fullstack",
+            "تصميم الواجهة وإدارة قاعدة البيانات",
+            "تنفيذ وظائف جديدة بناءً على احتياجات المستخدمين",
+            "صيانة مستمرة وتحسين الأداء",
+          ],
+          technologies: [
+            "React.js",
+            "Node.js",
+            "Express.js",
+            "MongoDB",
+            "JavaScript",
+            "Git",
+          ],
+        },
+        {
+          title: "متدربة تطوير ويب",
+          organization: "Oryx - دبي، الإمارات العربية المتحدة",
+          dates: "فبراير 2026 - مايو 2026",
+          description:
+            "المساهمة في تطوير موقع شركة ناشئة قائم يدمج حلولًا تعتمد على الذكاء الاصطناعي.",
+          points: [
+            "تطوير وظائف Frontend باستخدام React.js وفق متطلبات المستخدمين",
+            "بناء صفحة إحصائيات كاملة باستخدام Java Spring Boot وReact.js",
+            "التعاون مع فرق المنتج والتصميم لتحسين تجربة المستخدم",
+            "اختبار وتصحيح الأخطاء وتحسين الأداء",
+          ],
+          technologies: [
+            "React.js",
+            "Java",
+            "Spring Boot",
+            "JavaScript",
+            "HTML/CSS",
+            "Git",
+          ],
+        },
+      ],
+      education: [
+        {
+          title: "مصممة ومطورة تطبيقات",
+          organization: "RNCP المستوى 6 — يعادل درجة البكالوريوس",
+          dates: "دورة 2026",
+          points: [
+            "JavaScript",
+            "إدارة الخادم الخلفي وقواعد البيانات",
+            "دمج HTML/CSS",
+            "React.js / React Native",
+          ],
+        },
+        {
+          title: "دراسات في علوم الصحة والهندسة الطبية الحيوية",
+          organization: "جامعة كاين ومدرسة الهندسة ESIX — كاين، فرنسا",
+          dates: "2023 - 2025",
+          description: "عامان ركزا على الأسس العلمية وحل المشكلات بشكل عملي.",
+        },
+        {
+          title: "البكالوريا الفرنسية — بميزة",
+          organization: "Lycée Français AEFE Regnault — طنجة، المغرب",
+          dates: "دورة 2023",
+        },
+        {
+          title: "دبلوم فرنسي في الإسبانية كلغة أجنبية A2",
+          organization: "Lycée Français AEFE Regnault — طنجة، المغرب",
+          dates: "دورة 2021",
+          description:
+            "دراسة معمقة للغة الإسبانية مع انغماس مباشر في البلد لتعلم اللغة وإتقانها بالكامل.",
+        },
+        {
+          title: "شهادة ماستر في علم النفس",
+          dates: "دورة 2025",
+        },
+      ],
+    },
     contact: {
       desc: "لديك مشروع في ذهنك؟ دعنا نتحدث!",
       location: "كاين، فرنسا — طنجة، المغرب — عن بُعد",
@@ -559,6 +1169,7 @@ const translations = {
       projects: "Projekty",
       about: "O mne",
       skills: "Zručnosti",
+      cv: "Životopis",
       contact: "Kontakt",
     },
     hero: {
@@ -574,7 +1185,18 @@ const translations = {
       otherProjects: "Ďalšie projekty & realizácie",
       about: "O mne",
       skills: "Zručnosti",
+      cv: "Životopis",
       contact: "Kontakt",
+    },
+    lightbox: {
+      dialogLabel: "{title} — obrázok {current}",
+      close: "Zavrieť zobrazenie na celú obrazovku",
+      previous: "Predchádzajúci obrázok",
+      next: "Ďalší obrázok",
+      showImage: "Zobraziť obrázok {index}",
+    },
+    projectGallery: {
+      openImage: "Zväčšiť obrázok {index} projektu {title}",
     },
     about: {
       p1: "Mám vášeň pre vývoj webu a mobilných aplikácií – tvorím digitálne riešenia na mieru, ktoré spájajú moderný dizajn s robustnou funkčnosťou.",
@@ -635,6 +1257,29 @@ const translations = {
       },
     ],
     projects: {
+      oryx: {
+        title: "Oryx Dubaï",
+        label: "Trojmesačná remote stáž · Dubaj · HealthTech / AI",
+        description:
+          "Trojmesačná remote stáž v HealthTech startupe so sídlom v Dubaji, ktorý využíva umelú inteligenciu na zjednodušenie vybraných procesov v lekárskych klinikách. Kompletne som prerobila stránku so štatistikami, ktorá zhromažďuje dáta kliník, a prispela som aj k viacerým menším funkciám na zvyšku webu.",
+        tags: [
+          "React.js",
+          "JavaScript",
+          "HTML/CSS",
+          "Java Spring Boot",
+          "UI/UX",
+          "Git",
+          "HealthTech",
+          "AI",
+        ],
+        imageAlts: [
+          "Snímka obrazovky projektu Oryx Dubaj — stránka štatistík",
+          "Rozhranie projektu Oryx Dubaj",
+          "Ukážka platformy Oryx Dubaj",
+        ],
+        recommendationLabel: "Zobraziť odporúčací list",
+        recommendationAriaLabel: "Zobraziť odporúčací list zo stáže Oryx Dubaj",
+      },
       tanjatips: {
         title: "TanjaTips",
         description:
@@ -698,6 +1343,168 @@ const translations = {
           "Frontend sledovania vývojára na precvičenie udržovateľného UI a vlastného technického myslenia.",
       },
     },
+    cv: {
+      title: "Životopis",
+      intro:
+        "Stručný prehľad môjho fullstack profilu, medzinárodných skúseností, technických zručností a vzdelania.",
+      sidebarLabel: "Detaily životopisu",
+      profileLabel: "Profil",
+      name: "Anaïs Picaut",
+      role: "Medzinárodná fullstack webová vývojárka",
+      status:
+        "Momentálne študujem návrh a vývoj aplikácií (RNCP úroveň 6 — ekvivalent bakalárskeho stupňa).",
+      contactTitle: "Kontakt",
+      contact: {
+        email: "E-mail",
+        phone: "Telefón",
+        location: "Lokalita",
+        license: "Vodičský preukaz",
+        emailValue: "anais.picaut@gmail.com",
+        phoneValue: "+33 6 23 87 14 70",
+        locationValue: "Caen, Francúzsko / Tanger, Maroko",
+        licenseValue: "Vodičský preukaz skupiny B",
+      },
+      technicalSkillsTitle: "Technické zručnosti",
+      technicalSkills: [
+        {
+          category: "Frontend",
+          skills: [
+            "React.js",
+            "React Native",
+            "JavaScript",
+            "HTML / CSS",
+            "Figma",
+          ],
+        },
+        {
+          category: "Backend",
+          skills: ["Node.js", "Express.js", "Java Spring Boot", "MongoDB"],
+        },
+        {
+          category: "Nástroje",
+          skills: ["Git / GitHub", "VS Code", "Postman"],
+        },
+      ],
+      languagesTitle: "Jazyky",
+      languages: [
+        {
+          name: "Francúzština",
+          level: "Rodný jazyk",
+        },
+        {
+          name: "Angličtina",
+          level: "Pokročilá úroveň",
+        },
+        {
+          name: "Španielčina",
+          level: "Stredne pokročilá",
+        },
+        {
+          name: "Arabčina",
+          level: "Stredne pokročilá",
+        },
+        {
+          name: "Taliančina",
+          level: "Začiatočníčka",
+        },
+      ],
+      qualitiesTitle: "Vlastnosti",
+      qualities: [
+        "Zvedavosť",
+        "Dôraz na detail",
+        "Analytické myslenie",
+        "Prispôsobivosť",
+        "Tímový duch",
+      ],
+      introductionLabel: "Úvod",
+      profileTitle: "Medzinárodná fullstack webová vývojárka",
+      profileText:
+        "Fullstack webová vývojárka so záujmom o tvorbu užitočných aplikácií a kvalitných používateľských skúseností. Som zvedavá, dôsledná a samostatná, rada riešim technické výzvy a prispievam k inovatívnym projektom.",
+      experienceTitle: "Pracovné skúsenosti",
+      educationTitle: "Vzdelanie",
+      technologiesLabel: "Technológie",
+      experience: [
+        {
+          title: "Fullstack webová vývojárka - freelance",
+          organization: "TanjaTips - Tanger, Maroko",
+          dates: "dec. 2025 - súčasnosť",
+          description:
+            "Vývoj lokálnej webovej platformy s odporúčaniami pre používateľov v Tangeri.",
+          points: [
+            "Fullstack vývoj aplikácie",
+            "Návrh UI a správa databázy",
+            "Implementácia nových funkcií podľa potrieb používateľov",
+            "Priebežná údržba a optimalizácia výkonu",
+          ],
+          technologies: [
+            "React.js",
+            "Node.js",
+            "Express.js",
+            "MongoDB",
+            "JavaScript",
+            "Git",
+          ],
+        },
+        {
+          title: "Web Developer Intern",
+          organization: "Oryx - Dubaj, Spojené arabské emiráty",
+          dates: "feb. 2026 - máj 2026",
+          description:
+            "Podieľanie sa na rozvoji existujúceho startupového webu, ktorý integruje riešenia umelej inteligencie.",
+          points: [
+            "Vývoj frontendových funkcií v React.js podľa používateľských požiadaviek",
+            "Vytvorenie kompletnej štatistickej stránky pomocou Java Spring Boot a React.js",
+            "Spolupráca s produktovým a dizajnovým tímom na zlepšení používateľskej skúsenosti",
+            "Testovanie, ladenie a optimalizácia výkonu",
+          ],
+          technologies: [
+            "React.js",
+            "Java",
+            "Spring Boot",
+            "JavaScript",
+            "HTML/CSS",
+            "Git",
+          ],
+        },
+      ],
+      education: [
+        {
+          title: "Návrhárka a vývojárka aplikácií",
+          organization: "RNCP úroveň 6 — ekvivalent bakalárskeho stupňa",
+          dates: "Session 2026",
+          points: [
+            "JavaScript",
+            "Správa backendu a databázového servera",
+            "HTML/CSS integrácia",
+            "React.js / React Native",
+          ],
+        },
+        {
+          title: "Štúdium zdravotníckych vied a biomedicínskeho inžinierstva",
+          organization:
+            "Univerzita v Caen & inžinierska škola ESIX — Caen, Francúzsko",
+          dates: "2023 - 2025",
+          description:
+            "Dva roky zamerané na vedecké základy a praktické riešenie problémov.",
+        },
+        {
+          title: "Francúzska maturita — s vyznamenaním",
+          organization: "Lycée Français AEFE Regnault — Tanger, Maroko",
+          dates: "Session 2023",
+        },
+        {
+          title: "Francúzsky diplom zo španielčiny ako cudzieho jazyka A2",
+          organization: "Lycée Français AEFE Regnault — Tanger, Maroko",
+          dates: "Session 2021",
+          description:
+            "Hĺbkové štúdium španielskeho jazyka a okamžitá imerzia v krajine s cieľom jazyk plne zvládnuť.",
+        },
+        {
+          title: "Certifikát Master z psychológie",
+          dates: "Session 2025",
+        },
+      ],
+    },
     contact: {
       desc: "Máte projekt na mysli? Porozprávajme sa!",
       location: "Caen, Francúzsko — Tanger, Maroko — Na diaľku",
@@ -719,6 +1526,16 @@ const translations = {
     footer: "© 2026 Anaïs Picaut. Všetky práva vyhradené.",
   },
 };
+
+// ── Project assets ───────────────────────────────────────────────
+
+const oryxImageSources = [
+  "/images/Orxy1.jpeg",
+  "/images/Oryx2.jpeg",
+  "/images/Oryx3.jpeg",
+];
+
+const recommendationLetterUrl = "/images/Lettre%20de%20recommandation.pdf";
 
 // ── Icons ────────────────────────────────────────────────────────
 
@@ -968,50 +1785,108 @@ function LangDropdown({
 
 // ── Lightbox ─────────────────────────────────────────────────────
 
+function formatLabel(
+  template: string,
+  values: Record<string, string | number>,
+) {
+  return Object.entries(values).reduce(
+    (label, [key, value]) => label.replaceAll(`{${key}}`, String(value)),
+    template,
+  );
+}
+
 type LightboxProps = {
-  images: string[];
+  images: ProjectImage[];
   startIndex: number;
   title: string;
+  labels: LightboxLabels;
   onClose: () => void;
 };
 
-function Lightbox({ images, startIndex, title, onClose }: LightboxProps) {
+function Lightbox({
+  images,
+  startIndex,
+  title,
+  labels,
+  onClose,
+}: LightboxProps) {
   const [current, setCurrent] = useState(startIndex);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const prev = () => setCurrent((c) => (c - 1 + images.length) % images.length);
   const next = () => setCurrent((c) => (c + 1) % images.length);
+  const activeImage = images[current];
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+      if (images.length > 1 && event.key === "ArrowLeft") {
+        setCurrent((c) => (c - 1 + images.length) % images.length);
+      }
+      if (images.length > 1 && event.key === "ArrowRight") {
+        setCurrent((c) => (c + 1) % images.length);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [images.length, onClose]);
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-label={formatLabel(labels.dialogLabel, {
+        title,
+        current: current + 1,
+      })}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
       onClick={onClose}
     >
       <div
-        className="relative flex flex-col items-center gap-4 max-w-[90vw] max-h-[90vh]"
+        className="relative flex flex-col items-center gap-4 max-w-[94vw] max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         <button
+          ref={closeButtonRef}
+          type="button"
           onClick={onClose}
-          aria-label="Close"
-          className="absolute -top-10 right-0 text-white/70 hover:text-white transition-colors text-3xl leading-none"
+          aria-label={labels.close}
+          className="absolute -top-11 right-0 flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/80 hover:bg-white/20 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors text-2xl leading-none"
         >
           ×
         </button>
         <div
-          className={`relative rounded-2xl overflow-hidden shadow-2xl ${images.length === 1 ? "w-[min(800px,90vw)] h-[min(600px,80vh)]" : "w-[min(320px,80vw)] h-[min(580px,75vh)]"}`}
+          className={
+            "relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 " +
+            (images.length === 1
+              ? "w-[min(900px,92vw)] h-[min(680px,82vh)]"
+              : "w-[min(960px,92vw)] h-[min(680px,78vh)]")
+          }
         >
           <Image
-            src={images[current]}
-            alt={`${title} screenshot ${current + 1}`}
+            src={activeImage.src}
+            alt={activeImage.alt}
             fill
-            className="object-contain"
+            sizes="92vw"
+            className="object-contain bg-[#050e17]"
           />
         </div>
         {images.length > 1 && (
           <div className="flex items-center gap-6">
             <button
+              type="button"
               onClick={prev}
-              className="text-white/70 hover:text-white transition-colors text-2xl px-2"
-              aria-label="Previous"
+              className="text-white/70 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors text-3xl px-2"
+              aria-label={labels.previous}
             >
               ‹
             </button>
@@ -1019,22 +1894,31 @@ function Lightbox({ images, startIndex, title, onClose }: LightboxProps) {
               {images.map((_, i) => (
                 <button
                   key={i}
+                  type="button"
                   onClick={() => setCurrent(i)}
-                  className={`w-2 h-2 rounded-full transition-colors ${i === current ? "bg-white" : "bg-white/40 hover:bg-white/70"}`}
-                  aria-label={`Image ${i + 1}`}
+                  className={
+                    "w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white " +
+                    (i === current
+                      ? "bg-white"
+                      : "bg-white/40 hover:bg-white/70")
+                  }
+                  aria-label={formatLabel(labels.showImage, {
+                    index: i + 1,
+                  })}
                 />
               ))}
             </div>
             <button
+              type="button"
               onClick={next}
-              className="text-white/70 hover:text-white transition-colors text-2xl px-2"
-              aria-label="Next"
+              className="text-white/70 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors text-3xl px-2"
+              aria-label={labels.next}
             >
               ›
             </button>
           </div>
         )}
-        <p className="text-white/50 text-xs">
+        <p className="text-white/60 text-xs">
           {current + 1} / {images.length}
         </p>
       </div>
@@ -1052,13 +1936,27 @@ function Tag({ label }: { label: string }) {
   );
 }
 
+function normalizeProjectImages(
+  images: ProjectImageInput[] | undefined,
+  title: string,
+): ProjectImage[] {
+  return (images ?? []).map((image, index) =>
+    typeof image === "string"
+      ? { src: image, alt: title + " screenshot " + (index + 1) }
+      : image,
+  );
+}
+
 type MainProjectCardProps = {
   title: string;
   description: string;
   tags: string[];
-  images?: string[];
+  images?: ProjectImageInput[];
   label?: string;
   labelUrl?: string;
+  recommendationLetter?: { label: string; href: string; ariaLabel?: string };
+  lightboxLabels: LightboxLabels;
+  openImageLabel: string;
 };
 
 function MainProjectCard({
@@ -1068,14 +1966,18 @@ function MainProjectCard({
   images,
   label = "",
   labelUrl,
+  recommendationLetter,
+  lightboxLabels,
+  openImageLabel,
 }: MainProjectCardProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const galleryImages = normalizeProjectImages(images, title);
 
   return (
     <>
-      <div className="project-card bg-white dark:bg-[#1a2a3e] rounded-2xl p-4 sm:p-6 flex flex-col gap-4 shadow-sm">
-        <div className="flex justify-between items-start">
-          <h3 className="text-[#4a7aa8] font-semibold text-lg leading-snug">
+      <div className="project-card bg-white dark:bg-[#1a2a3e] rounded-2xl p-4 sm:p-6 flex flex-col gap-4 shadow-sm border border-gray-100 dark:border-[#2a3f5a]">
+        <div className="flex justify-between items-start gap-4">
+          <h3 className="text-[#4a7aa8] dark:text-[#8ac7f5] font-semibold text-lg leading-snug">
             {title}
           </h3>
           {label &&
@@ -1084,7 +1986,7 @@ function MainProjectCard({
                 href={labelUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="group relative"
+                className="group relative flex-shrink-0"
                 aria-label={label}
               >
                 <span className="text-[#4a7aa8] hover:text-[#2d5f8a] transition-colors text-xs font-medium flex items-center justify-center w-5 h-5 rounded-full border border-[#4a7aa8]">
@@ -1095,7 +1997,7 @@ function MainProjectCard({
                 </div>
               </a>
             ) : (
-              <div className="group relative">
+              <div className="group relative flex-shrink-0">
                 <span className="text-[#4a7aa8] text-xs font-medium flex items-center justify-center w-5 h-5 rounded-full border border-[#4a7aa8] cursor-help">
                   i
                 </span>
@@ -1105,23 +2007,29 @@ function MainProjectCard({
               </div>
             ))}
         </div>
-        {images && images.length > 0 && (
+
+        {galleryImages.length > 0 && (
           <div className="project-phone-strip flex gap-2 justify-center">
-            {images.map((src, i) => (
+            {galleryImages.map((image, i) => (
               <button
-                key={i}
+                key={image.src}
+                type="button"
                 onClick={() => setLightboxIndex(i)}
                 className="project-phone-shot relative rounded-lg overflow-hidden flex-shrink-0 cursor-zoom-in group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4a7aa8]"
-                aria-label={`Enlarge screenshot ${i + 1}`}
+                aria-label={formatLabel(openImageLabel, {
+                  index: i + 1,
+                  title,
+                })}
               >
                 <Image
-                  src={src}
-                  alt={`${title} screenshot ${i + 1}`}
+                  src={image.src}
+                  alt={image.alt}
                   fill
+                  sizes="90px"
                   className="object-cover transition-transform duration-200 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 flex items-center justify-center">
-                  <span className="text-white text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-200 flex items-center justify-center">
+                  <span className="text-white text-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     ⊕
                   </span>
                 </div>
@@ -1129,20 +2037,37 @@ function MainProjectCard({
             ))}
           </div>
         )}
+
         <p className="project-description text-gray-600 dark:text-[#94aac5] text-sm leading-relaxed">
           {description}
         </p>
+
         <div className="flex flex-wrap gap-2 mt-auto">
           {tags.map((t) => (
             <Tag key={t} label={t} />
           ))}
         </div>
+
+        {recommendationLetter && (
+          <a
+            href={recommendationLetter.href}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={
+              recommendationLetter.ariaLabel ?? recommendationLetter.label
+            }
+            className="project-action"
+          >
+            {recommendationLetter.label}
+          </a>
+        )}
       </div>
-      {lightboxIndex !== null && images && (
+      {lightboxIndex !== null && galleryImages.length > 0 && (
         <Lightbox
-          images={images}
+          images={galleryImages}
           startIndex={lightboxIndex}
           title={title}
+          labels={lightboxLabels}
           onClose={() => setLightboxIndex(null)}
         />
       )}
@@ -1156,6 +2081,8 @@ type SmallProjectCardProps = {
   tech: string;
   image?: string;
   githubUrl?: string;
+  lightboxLabels: LightboxLabels;
+  openImageLabel: string;
 };
 
 function SmallProjectCard({
@@ -1164,6 +2091,8 @@ function SmallProjectCard({
   tech,
   image,
   githubUrl,
+  lightboxLabels,
+  openImageLabel,
 }: SmallProjectCardProps) {
   const [open, setOpen] = useState(false);
 
@@ -1186,12 +2115,16 @@ function SmallProjectCard({
           <button
             onClick={() => setOpen(true)}
             className="small-project-image relative w-full h-24 rounded-lg overflow-hidden cursor-zoom-in group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4a7aa8]"
-            aria-label="Enlarge image"
+            aria-label={formatLabel(openImageLabel, {
+              index: 1,
+              title,
+            })}
           >
             <Image
               src={image}
               alt={`${title} screenshot`}
               fill
+              sizes="(max-width: 767px) 33vw, 320px"
               className="object-cover object-top transition-transform duration-200 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 flex items-center justify-center">
@@ -1208,9 +2141,10 @@ function SmallProjectCard({
       </div>
       {open && image && (
         <Lightbox
-          images={[image]}
+          images={[{ src: image, alt: title + " screenshot" }]}
           startIndex={0}
           title={title}
+          labels={lightboxLabels}
           onClose={() => setOpen(false)}
         />
       )}
@@ -1283,6 +2217,177 @@ function TerminalCard({ slug, items }: { slug: string; items: SkillItem[] }) {
         </p>
       </div>
     </div>
+  );
+}
+
+// ── CVSection ────────────────────────────────────────────────────
+
+function CvTimeline({
+  heading,
+  items,
+  technologiesLabel,
+}: {
+  heading: string;
+  items: CvTimelineItem[];
+  technologiesLabel: string;
+}) {
+  const headingId = "cv-" + heading.toLowerCase().replace(/\s+/g, "-");
+
+  return (
+    <section className="cv-timeline-section" aria-labelledby={headingId}>
+      <h3 id={headingId} className="cv-section-heading">
+        {heading}
+      </h3>
+      <div className="cv-timeline">
+        {items.map((item) => (
+          <article
+            key={item.title + "-" + item.dates}
+            className="cv-timeline-item"
+          >
+            <span className="cv-timeline-marker" aria-hidden="true" />
+            <div className="cv-timeline-content">
+              <div className="cv-item-header">
+                <div>
+                  <h4>{item.title}</h4>
+                  {item.organization && <p>{item.organization}</p>}
+                </div>
+                <span>{item.dates}</span>
+              </div>
+              {item.description && (
+                <p className="cv-entry-description">{item.description}</p>
+              )}
+              {item.points && item.points.length > 0 && (
+                <ul className="cv-mission-list">
+                  {item.points.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
+              )}
+              {item.technologies && item.technologies.length > 0 && (
+                <div className="cv-badges" aria-label={technologiesLabel}>
+                  {item.technologies.map((technology) => (
+                    <span key={technology} className="cv-badge">
+                      {technology}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function CVSection({ cv }: { cv: typeof translations.en.cv }) {
+  return (
+    <section id="cv" className="cv section-bg">
+      <div className="cv-container">
+        <div className="cv-heading">
+          <h2 className="cv-title">{cv.title}</h2>
+          <p className="cv-intro">{cv.intro}</p>
+        </div>
+
+        <div className="cv-grid">
+          <aside className="cv-sidebar" aria-label={cv.sidebarLabel}>
+            <div className="cv-card cv-identity-card">
+              <p className="cv-eyebrow">{cv.profileLabel}</p>
+              <h3>{cv.name}</h3>
+              <p className="cv-role">{cv.role}</p>
+              <p className="cv-status">{cv.status}</p>
+            </div>
+
+            <div className="cv-card">
+              <h3 className="cv-section-heading">{cv.contactTitle}</h3>
+              <ul className="cv-contact-list">
+                <li>
+                  <span>{cv.contact.email}</span>
+                  <a href={`mailto:${cv.contact.emailValue}`} dir="ltr">
+                    {cv.contact.emailValue}
+                  </a>
+                </li>
+                <li>
+                  <span>{cv.contact.phone}</span>
+                  <a
+                    href={`tel:${cv.contact.phoneValue.replaceAll(" ", "")}`}
+                    dir="ltr"
+                  >
+                    {cv.contact.phoneValue}
+                  </a>
+                </li>
+                <li>
+                  <span>{cv.contact.location}</span>
+                  <p>{cv.contact.locationValue}</p>
+                </li>
+                <li>
+                  <span>{cv.contact.license}</span>
+                  <p>{cv.contact.licenseValue}</p>
+                </li>
+              </ul>
+            </div>
+
+            <div className="cv-card">
+              <h3 className="cv-section-heading">{cv.technicalSkillsTitle}</h3>
+              <div className="cv-skill-groups">
+                {cv.technicalSkills.map((group) => (
+                  <div key={group.category} className="cv-skill-group">
+                    <h4>{group.category}</h4>
+                    <div className="cv-badges">
+                      {group.skills.map((skill) => (
+                        <span key={skill} className="cv-badge">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="cv-card">
+              <h3 className="cv-section-heading">{cv.languagesTitle}</h3>
+              <ul className="cv-line-list">
+                {cv.languages.map((language) => (
+                  <li key={language.name}>
+                    <span>{language.name}</span>
+                    <strong>{language.level}</strong>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="cv-card">
+              <h3 className="cv-section-heading">{cv.qualitiesTitle}</h3>
+              <ul className="cv-quality-list">
+                {cv.qualities.map((quality) => (
+                  <li key={quality}>{quality}</li>
+                ))}
+              </ul>
+            </div>
+          </aside>
+
+          <div className="cv-main">
+            <section className="cv-card cv-profile-card">
+              <p className="cv-eyebrow">{cv.introductionLabel}</p>
+              <h3>{cv.profileTitle}</h3>
+              <p>{cv.profileText}</p>
+            </section>
+
+            <CvTimeline
+              heading={cv.experienceTitle}
+              items={cv.experience}
+              technologiesLabel={cv.technologiesLabel}
+            />
+            <CvTimeline
+              heading={cv.educationTitle}
+              items={cv.education}
+              technologiesLabel={cv.technologiesLabel}
+            />
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -1407,6 +2512,10 @@ export default function Home() {
 
   const T = translations[lang];
   const P = T.projects;
+  const oryxImages = P.oryx.imageAlts.map((alt, index) => ({
+    src: oryxImageSources[index],
+    alt,
+  }));
 
   return (
     <div className="min-h-screen font-[family-name:var(--font-geist-sans)]">
@@ -1462,6 +2571,14 @@ export default function Home() {
               </li>
               <li>
                 <a
+                  href="#cv"
+                  className="hover:text-gray-900 dark:hover:text-white transition-colors"
+                >
+                  {T.nav.cv}
+                </a>
+              </li>
+              <li>
+                <a
                   href="#contact"
                   className="hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
@@ -1512,6 +2629,7 @@ export default function Home() {
               { href: "#projets", label: T.nav.projects },
               { href: "#apropos", label: T.nav.about },
               { href: "#competences", label: T.nav.skills },
+              { href: "#cv", label: T.nav.cv },
               { href: "#contact", label: T.nav.contact },
             ].map(({ href, label }) => (
               <a
@@ -1566,6 +2684,21 @@ export default function Home() {
           <h3 className="subtitle">{T.sections.mainProjects}</h3>
           <div className="grid-main">
             <MainProjectCard
+              title={P.oryx.title}
+              description={P.oryx.description}
+              label={P.oryx.label}
+              tags={P.oryx.tags}
+              images={oryxImages}
+              lightboxLabels={T.lightbox}
+              openImageLabel={T.projectGallery.openImage}
+              recommendationLetter={{
+                label: P.oryx.recommendationLabel,
+                href: recommendationLetterUrl,
+                ariaLabel: P.oryx.recommendationAriaLabel,
+              }}
+            />
+
+            <MainProjectCard
               title={P.tanjatips.title}
               description={P.tanjatips.description}
               tags={P.tanjatips.tags}
@@ -1576,6 +2709,8 @@ export default function Home() {
                 "/images/tanjatips-4.png",
               ]}
               label={P.tanjatips.label}
+              lightboxLabels={T.lightbox}
+              openImageLabel={T.projectGallery.openImage}
             />
 
             <MainProjectCard
@@ -1583,6 +2718,8 @@ export default function Home() {
               description={P.brainflow.description}
               tags={P.brainflow.tags}
               label={P.brainflow.label}
+              lightboxLabels={T.lightbox}
+              openImageLabel={T.projectGallery.openImage}
             />
           </div>
 
@@ -1593,6 +2730,8 @@ export default function Home() {
               description={P.deliveroo.description}
               tech="Node.js + Express"
               githubUrl="https://github.com/unkochiii/Deliveroo---Backend"
+              lightboxLabels={T.lightbox}
+              openImageLabel={T.projectGallery.openImage}
             />
             <SmallProjectCard
               title={P.vinted.title}
@@ -1600,12 +2739,16 @@ export default function Home() {
               tech="React + JavaScript"
               image="/images/vinted.png"
               githubUrl="https://github.com/unkochiii/frontend_vinted"
+              lightboxLabels={T.lightbox}
+              openImageLabel={T.projectGallery.openImage}
             />
             <SmallProjectCard
               title={P.marvelBackend.title}
               description={P.marvelBackend.description}
               tech="Node.js + API REST"
               githubUrl="https://github.com/unkochiii/marvelBackend"
+              lightboxLabels={T.lightbox}
+              openImageLabel={T.projectGallery.openImage}
             />
             <SmallProjectCard
               title={P.marvelFrontend.title}
@@ -1613,12 +2756,16 @@ export default function Home() {
               tech="React + JavaScript"
               image="/images/marvel-frontend.png"
               githubUrl="https://github.com/unkochiii/marvelFrontend"
+              lightboxLabels={T.lightbox}
+              openImageLabel={T.projectGallery.openImage}
             />
             <SmallProjectCard
               title={P.suiviBackend.title}
               description={P.suiviBackend.description}
               tech="Node.js + MongoDB"
               githubUrl="https://github.com/unkochiii/Outil-Suivi-Dev-Backend"
+              lightboxLabels={T.lightbox}
+              openImageLabel={T.projectGallery.openImage}
             />
             <SmallProjectCard
               title={P.suiviFrontend.title}
@@ -1626,6 +2773,8 @@ export default function Home() {
               tech="React + JavaScript"
               image="/images/outil-suivi.png"
               githubUrl="https://github.com/unkochiii/OutilSuiviFrontend"
+              lightboxLabels={T.lightbox}
+              openImageLabel={T.projectGallery.openImage}
             />
           </div>
         </div>
@@ -1659,6 +2808,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ── CV ─────────────────────────────────────────────────── */}
+      <CVSection cv={T.cv} />
 
       {/* ── Contact ────────────────────────────────────────────── */}
       <section id="contact" className="contact contact-bg">
